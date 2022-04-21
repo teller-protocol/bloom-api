@@ -54,8 +54,14 @@ export default class MailSender {
         Source: emailConfig.SMTP_FROMs,
       };
 
-    const data = await sesClient.send(new SendEmailCommand(params));
 
-    return data 
+    try{
+        const data = await sesClient.send(new SendEmailCommand(params));
+
+        return data 
+    }catch(error){
+        console.error(error)
+        return undefined 
+    }
   }
 }
