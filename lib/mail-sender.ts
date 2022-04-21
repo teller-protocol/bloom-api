@@ -23,9 +23,7 @@ const sesClient = new SESClient({
 
 
 export default class MailSender {
-    
-  transporter:any 
-  
+     
   constructor(){
 
      
@@ -46,12 +44,12 @@ export default class MailSender {
           },
           Body: {             
             Text: {
-                Charset: "UTF-8",
+                Charset: 'UTF-8',
                 Data: text
                }
           },
         },
-        Source: emailConfig.SMTP_FROMs,
+        Source: emailConfig.SMTP_FROM,
       };
 
 
