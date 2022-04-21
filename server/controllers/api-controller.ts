@@ -12,11 +12,8 @@ export default class ApiController {
   }
 
   /*
-    @notice Generates an attestation using the pre-initialized eip712SDK
-
-    @param recipientAddress The public address of the account to attest to be verified for MarketRegistry
-    @param authToken The authentication token that proves that you are authorized to make this API call. Must exist in the mongo database. 
-
+    @notice Accepts a webhook call from Bloom API 
+ 
   */
   receiveWebhook: APICall = async (req: any, res: any) => {
     console.log('received webhook', req)
