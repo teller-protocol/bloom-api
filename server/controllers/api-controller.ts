@@ -1,8 +1,7 @@
 import { APICall } from 'mini-route-loader'
 
 import AppHelper from '../../lib/app-helper'
-import AuthHelper from '../../lib/auth-helper'
-import { EIP712SDK } from '../../lib/EIP712SDK'
+ 
 import MongoInterface from '../../lib/mongo-interface'
 
 export default class ApiController {
@@ -21,7 +20,12 @@ export default class ApiController {
     @param authToken The authentication token that proves that you are authorized to make this API call. Must exist in the mongo database. 
 
   */
-  receiveBloomWebhook: APICall = async (req: any, res: any) => {
+  receiveWebhook: APICall = async (req: any, res: any) => {
+
+
+    console.log('received webhook',req )
+
+    
     const inputParams = req.body
 
     const inputs = {
@@ -30,7 +34,6 @@ export default class ApiController {
     }
 
 
-    console.log('received webhook')
 
     
     return res.status(200).send({

@@ -2,8 +2,7 @@ import fs from 'fs'
 import http from 'http'
 import https from 'https'
 import path from 'path'
-
-import { Web3Provider } from '@ethersproject/providers'
+ 
 import cors from 'cors'
 import express from 'express' 
 import MiniRouteLoader from 'mini-route-loader'
