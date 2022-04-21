@@ -1,43 +1,61 @@
  
-import nodemailer from 'nodemailer'
+
+import { SendEmailCommand, SESClient } from '@aws-sdk/client-ses';
+import { ServiceException } from '@aws-sdk/smithy-client';
+ 
+
+const AWS_REGION = 'us-east-2';
+
 
 require('dotenv').config()
  
 const emailConfig = require('../server/config/emailConfig.json')
  
+
+
+const sesClient = new SESClient({
+    region: AWS_REGION,
+    credentials: {
+      accessKeyId: process.env.SMTP_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.SMTP_SECRET_ACCESS_KEY!,
+    },
+  });
+
+
 export default class MailSender {
     
   transporter:any 
   
   constructor(){
 
-    const SMTP_USERNAME = process.env.SMTP_USERNAME 
-    const SMTP_PASSWORD = process.env.SMTP_PASSWORD 
-
-    if(!SMTP_USERNAME || !SMTP_PASSWORD){
-        throw 'Missing SMTP credentials. Configure in .env file.'
-    }
-
-    this.transporter = nodemailer.createTransport(
-        {
-            host: emailConfig.SMTP_HOST,
-            auth:{
-                user: SMTP_USERNAME,
-                pass: SMTP_PASSWORD
-            }
-        }
-    )
-
+     
   }
 
   
-  sendEmail(subject: string, text: string) {
+  static async sendEmail(subject: string, text: string) {
 
-    this.transporter.sendEmail({
-        from: emailConfig.SMTP_FROM, 
-        to: emailConfig.SMTP_TO,  
-        subject,
-        text
-    })
+
+    const params = {
+        Destination: {
+          ToAddresses: [emailConfig.SMTP_TO],
+        },
+        Message: {
+          Subject: {
+            Charset: 'UTF-8', 
+            Data: subject,
+          },
+          Body: {             
+            Text: {
+                Charset: "UTF-8",
+                Data: text
+               }
+          },
+        },
+        Source: 'info@sg.loans',
+      };
+
+    const data = await sesClient.send(new SendEmailCommand(params));
+
+    return data 
   }
 }

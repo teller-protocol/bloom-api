@@ -12,8 +12,7 @@ import FileHelper from '../lib/file-helper'
 import MongoInterface from '../lib/mongo-interface'
 
 import ApiController from './controllers/api-controller'
-import MailSender from '../lib/mail-sender'
-
+ 
 require('dotenv').config()
 
 const routes = FileHelper.readJSONFile('./server/config/routes.json')
@@ -29,10 +28,8 @@ export default class WebServer {
 
     const mongoInterface = new MongoInterface()
     await mongoInterface.init(dbName) 
-   
-    const mailSender = new MailSender()
-
-    const apiController = new ApiController(mailSender,mongoInterface)
+    
+    const apiController = new ApiController(mongoInterface)
 
     const app = express()
     const apiPort = serverConfig.port ? serverConfig.port : 3000
@@ -40,15 +37,9 @@ export default class WebServer {
     app.use(cors())
     app.use(express.json())
 
-    if (serverConfig.useHTTPS == true) {
-      this.server = https.createServer({
-        cert: fs.readFileSync('/home/andy/deploy/cert/starflask.com.pem'),
-        key: fs.readFileSync('/home/andy/deploy/cert/starflask.com.key'),
-      })
-      console.log('--using https--')
-    } else {
-      this.server = http.createServer(app)
-    }
+    
+    this.server = http.createServer(app)
+    
 
     MiniRouteLoader.loadRoutes(app, routes, apiController)
 

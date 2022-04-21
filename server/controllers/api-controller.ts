@@ -1,4 +1,4 @@
-import MailSender from 'lib/mail-sender'
+import MailSender from '../../lib/mail-sender'
 import { APICall } from 'mini-route-loader'
 
 import AppHelper from '../../lib/app-helper'
@@ -6,8 +6,7 @@ import AppHelper from '../../lib/app-helper'
 import MongoInterface, { WebhookReceipt } from '../../lib/mongo-interface'
 
 export default class ApiController {
-  constructor(
-    public mailSender: MailSender,
+  constructor( 
     public mongoInterface: MongoInterface
   ) {}
 
@@ -53,7 +52,7 @@ export default class ApiController {
       
       console.log('inserted',created )
 
-      let sent = this.mailSender.sendEmail('Bloom API Alert','A webhook has been received with Request Id '.concat(inputs.requestId))
+      let sent = MailSender.sendEmail('Bloom API Alert','A webhook has been received with Request Id '.concat(inputs.requestId))
 
 
       return res.status(200).send({

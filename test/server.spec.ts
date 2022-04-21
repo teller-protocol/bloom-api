@@ -8,7 +8,7 @@ const serverConfig = FileHelper.readJSONFile(
   './server/config/serverConfig.json'
 )
 
-const uriRoot = 'http://localhost:3000'
+const uriRoot = 'http://localhost:8000'
  
 describe('Webhook Server', () => {
   describe('Recieve webhook', () => {
