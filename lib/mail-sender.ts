@@ -51,7 +51,7 @@ export default class MailSender {
                }
           },
         },
-        Source: 'info@sg.loans',
+        Source: emailConfig.SMTP_FROMs,
       };
 
     const data = await sesClient.send(new SendEmailCommand(params));
