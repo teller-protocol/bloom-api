@@ -1,0 +1,9 @@
+[
+    {"type":"get","uri":"/api/ping","method":"ping","controller":"api"},
+ 
+    {"type":"post","uri":"/api/request_signature","method":"requestSignature","controller":"api"},
+ 
+    {"type":"post","uri":"/api/request_attestation","method":"requestAttestation","controller":"api"}
+  
+    
+]
