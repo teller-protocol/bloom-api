@@ -13,7 +13,7 @@ const sesClient = new SESClient({
   },
 })
 
-export async function sendEmail(subject: string, text: string): any {
+export async function sendEmail(subject: string, text: string): Promise<any> {
   const params = {
     Source: emailConfig.SMTP_FROM,
     Destination: {
