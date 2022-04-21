@@ -9,9 +9,8 @@ const serverConfig = FileHelper.readJSONFile(
 )
 
 const uriRoot = 'http://localhost:3000'
-let authToken: any
-
-describe('AttestationServer', () => {
+ 
+describe('Webhook Server', () => {
   describe('Recieve webhook', () => {
     before(async () => {
       //boot web server
