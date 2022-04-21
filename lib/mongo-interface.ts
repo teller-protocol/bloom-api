@@ -1,28 +1,24 @@
 import {
-  AnyKeys,
-  connect,
-  FilterQuery,
   Mongoose,
   Schema,
-  UpdateQuery,
 } from 'mongoose'
 
-export interface AuthToken {
-  token: { type: string; index: true; unique: true }
+export interface WebhookReceipt {
+  requestId: string
   createdAt: number
 }
 
 export default class MongoInterface {
   mongoose = new Mongoose()
 
-  AuthTokenSchema = new Schema<AuthToken>({
-    token: { type: String, index: true, unique: true },
+  WebhookReceiptSchema = new Schema<WebhookReceipt>({
+    requestId: { type: String, index: true, unique: true },
     createdAt: { type: Number },
   })
 
-  AuthTokenModel = this.mongoose.model<AuthToken>(
-    'authtokens',
-    this.AuthTokenSchema
+  WebhookReceiptModel = this.mongoose.model<WebhookReceipt>(
+    'webhookreceipts',
+    this.WebhookReceiptSchema
   )
 
   async init(dbName: string, config?: any): Promise<void> {
@@ -30,7 +26,7 @@ export default class MongoInterface {
     const port: number = config?.port ?? 27017
 
     if (dbName == null) {
-      console.log('WARNING: No dbName Specified')
+      console.log('WARNING: No dbName specified')
       process.exit()
     }
 
