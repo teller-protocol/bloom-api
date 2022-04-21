@@ -5,6 +5,10 @@ import {
 
 export interface WebhookReceipt {
   requestId: string
+  user: any,
+  template: any,
+  profile: any,
+  application:any,
   createdAt: number
 }
 
@@ -13,7 +17,11 @@ export default class MongoInterface {
 
   WebhookReceiptSchema = new Schema<WebhookReceipt>({
     requestId: { type: String, index: true, unique: true },
-    createdAt: { type: Number },
+    user: Object,
+    template: Object,
+    profile: Object,
+    application: Object,
+    createdAt: Number,
   })
 
   WebhookReceiptModel = this.mongoose.model<WebhookReceipt>(

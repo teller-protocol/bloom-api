@@ -4,16 +4,19 @@ import nodemailer from 'nodemailer'
 require('dotenv').config()
  
 const emailConfig = require('../server/config/emailConfig.json')
-
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+ 
 export default class MailSender {
     
-    transporter:any 
+  transporter:any 
   
   constructor(){
 
     const SMTP_USERNAME = process.env.SMTP_USERNAME 
     const SMTP_PASSWORD = process.env.SMTP_PASSWORD 
+
+    if(!SMTP_USERNAME || !SMTP_PASSWORD){
+        throw 'Missing SMTP credentials. Configure in .env file.'
+    }
 
     this.transporter = nodemailer.createTransport(
         {
@@ -29,6 +32,12 @@ export default class MailSender {
 
   
   sendEmail(subject: string, text: string) {
-     
+
+    this.transporter.sendEmail({
+        from: emailConfig.SMTP_FROM, 
+        to: emailConfig.SMTP_TO,  
+        subject,
+        text
+    })
   }
 }

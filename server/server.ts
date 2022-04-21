@@ -12,6 +12,7 @@ import FileHelper from '../lib/file-helper'
 import MongoInterface from '../lib/mongo-interface'
 
 import ApiController from './controllers/api-controller'
+import MailSender from '../lib/mail-sender'
 
 require('dotenv').config()
 
@@ -29,8 +30,9 @@ export default class WebServer {
     const mongoInterface = new MongoInterface()
     await mongoInterface.init(dbName) 
    
+    const mailSender = new MailSender()
 
-    const apiController = new ApiController(mongoInterface)
+    const apiController = new ApiController(mailSender,mongoInterface)
 
     const app = express()
     const apiPort = serverConfig.port ? serverConfig.port : 3000

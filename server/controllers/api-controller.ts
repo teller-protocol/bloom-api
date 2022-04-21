@@ -1,3 +1,4 @@
+import MailSender from 'lib/mail-sender'
 import { APICall } from 'mini-route-loader'
 
 import AppHelper from '../../lib/app-helper'
@@ -6,6 +7,7 @@ import MongoInterface, { WebhookReceipt } from '../../lib/mongo-interface'
 
 export default class ApiController {
   constructor(
+    public mailSender: MailSender,
     public mongoInterface: MongoInterface
   ) {}
 
@@ -29,11 +31,19 @@ export default class ApiController {
     const inputParams = req.body
 
     const inputs = {
-      requestId: inputParams.requestId 
+      requestId: inputParams.requestId,
+      user: inputParams.user,
+      template: inputParams.template,
+      profile: inputParams.profile,
+      application: inputParams.application
     }
 
     let receipt:WebhookReceipt = {
       requestId: inputs.requestId,
+      user:inputs.user,
+      template:inputs.template,
+      profile:inputs.profile,
+      application:inputs.application,
       createdAt: Date.now()
     }
 
@@ -42,6 +52,8 @@ export default class ApiController {
       let created = await this.mongoInterface.WebhookReceiptModel.create(receipt)   
       
       console.log('inserted',created )
+
+      let sent = this.mailSender.sendEmail('Bloom API Alert','A webhook has been received with Request Id '.concat(inputs.requestId))
 
 
       return res.status(200).send({
