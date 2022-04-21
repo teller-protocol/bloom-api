@@ -1,14 +1,11 @@
-import {sendEmail} from '../../lib/mail-sender'
 import { APICall } from 'mini-route-loader'
 
 import AppHelper from '../../lib/app-helper'
- 
+import { sendEmail } from '../../lib/mail-sender'
 import MongoInterface, { WebhookReceipt } from '../../lib/mongo-interface'
 
 export default class ApiController {
-  constructor( 
-    public mongoInterface: MongoInterface
-  ) {}
+  constructor(public mongoInterface: MongoInterface) {}
 
   ping: APICall = async (req: any, res: any) => {
     return res.status(200).send({ success: true })
@@ -22,10 +19,7 @@ export default class ApiController {
 
   */
   receiveWebhook: APICall = async (req: any, res: any) => {
-
-
-    console.log('received webhook',req )
-
+    console.log('received webhook', req)
 
     const inputParams = req.body
 
@@ -34,50 +28,44 @@ export default class ApiController {
       user: inputParams.user,
       template: inputParams.template,
       profile: inputParams.profile,
-      application: inputParams.application
+      application: inputParams.application,
     }
 
-    let receipt:WebhookReceipt = {
+    const receipt: WebhookReceipt = {
       requestId: inputs.requestId,
-      user:inputs.user,
-      template:inputs.template,
-      profile:inputs.profile,
-      application:inputs.application,
-      createdAt: Date.now()
+      user: inputs.user,
+      template: inputs.template,
+      profile: inputs.profile,
+      application: inputs.application,
+      createdAt: Date.now(),
     }
 
-    let createdRecord; 
-    let sentEmail;
+    let createdRecord
+    let sentEmail
 
-    try{
+    try {
+      createdRecord = await this.mongoInterface.WebhookReceiptModel.create(
+        receipt
+      )
 
-      createdRecord = await this.mongoInterface.WebhookReceiptModel.create(receipt)   
-      
-      console.log('inserted',createdRecord )
- 
-   
-
-    }catch(error){
+      console.log('inserted', createdRecord)
+    } catch (error) {
       console.error(error)
     }
 
-    try{
+    try {
+      sentEmail = await sendEmail(
+        'Bloom API Alert',
+        'A webhook has been received with request_id '.concat(inputs.requestId)
+      )
 
-      sentEmail = await sendEmail('Bloom API Alert','A webhook has been received with request_id '.concat(inputs.requestId))
-
-      console.log('sent email',sentEmail )
- 
-
-    }catch(error){
+      console.log('sent email', sentEmail)
+    } catch (error) {
       console.error(error)
     }
 
-
-
-
-    
     return res.status(200).send({
-      success: true 
+      success: true,
     })
   }
 }

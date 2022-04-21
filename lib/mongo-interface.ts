@@ -1,14 +1,11 @@
-import {
-  Mongoose,
-  Schema,
-} from 'mongoose'
+import { Mongoose, Schema } from 'mongoose'
 
 export interface WebhookReceipt {
   requestId: string
-  user: any,
-  template: any,
-  profile: any,
-  application:any,
+  user: any
+  template: any
+  profile: any
+  application: any
   createdAt: number
 }
 
