@@ -3,18 +3,15 @@
 import { SendEmailCommand, SESClient } from '@aws-sdk/client-ses';
 import { ServiceException } from '@aws-sdk/smithy-client';
  
-
-const AWS_REGION = 'us-east-2';
-
+ 
 
 require('dotenv').config()
  
 const emailConfig = require('../server/config/emailConfig.json')
  
 
-
 const sesClient = new SESClient({
-    region: AWS_REGION,
+    region: emailConfig.AWS_REGION,
     credentials: {
       accessKeyId: process.env.SMTP_ACCESS_KEY_ID!,
       secretAccessKey: process.env.SMTP_SECRET_ACCESS_KEY!,
@@ -22,18 +19,12 @@ const sesClient = new SESClient({
   });
 
 
-export default class MailSender {
-     
-  constructor(){
-
-     
-  }
-
-  
-  static async sendEmail(subject: string, text: string) {
+ 
+  export async function sendEmail(subject: string, text: string) {
 
 
     const params = {
+        Source: emailConfig.SMTP_FROM,
         Destination: {
           ToAddresses: [emailConfig.SMTP_TO],
         },
@@ -42,24 +33,21 @@ export default class MailSender {
             Charset: 'UTF-8', 
             Data: subject,
           },
-          Body: {             
+        Body: {             
             Text: {
                 Charset: 'UTF-8',
                 Data: text
                }
           },
-        },
-        Source: emailConfig.SMTP_FROM,
+        }
+        
       };
 
 
-    try{
-        const data = await sesClient.send(new SendEmailCommand(params));
+     
+    const data = await sesClient.send(new SendEmailCommand(params));
 
-        return data 
-    }catch(error){
-        console.error(error)
-        return undefined 
-    }
-  }
+    return data 
+    
+  
 }

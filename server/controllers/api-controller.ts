@@ -1,4 +1,4 @@
-import MailSender from '../../lib/mail-sender'
+import {sendEmail} from '../../lib/mail-sender'
 import { APICall } from 'mini-route-loader'
 
 import AppHelper from '../../lib/app-helper'
@@ -46,25 +46,38 @@ export default class ApiController {
       createdAt: Date.now()
     }
 
+    let createdRecord; 
+    let sentEmail;
+
     try{
 
-      let created = await this.mongoInterface.WebhookReceiptModel.create(receipt)   
+      createdRecord = await this.mongoInterface.WebhookReceiptModel.create(receipt)   
       
-      console.log('inserted',created )
-
-      let sent = MailSender.sendEmail('Bloom API Alert','A webhook has been received with Request Id '.concat(inputs.requestId))
-
-
-      return res.status(200).send({
-        success: true 
-      })
+      console.log('inserted',createdRecord )
+ 
+   
 
     }catch(error){
       console.error(error)
     }
+
+    try{
+
+      sentEmail = await sendEmail('Bloom API Alert','A webhook has been received with request_id '.concat(inputs.requestId))
+
+      console.log('sent email',sentEmail )
+ 
+
+    }catch(error){
+      console.error(error)
+    }
+
+
+
+
     
     return res.status(200).send({
-      success: false 
+      success: true 
     })
   }
 }

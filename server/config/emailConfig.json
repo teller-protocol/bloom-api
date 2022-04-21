@@ -1,5 +1,5 @@
 {
-    "SMTP_HOST":"email-smtp.us-east-2.amazonaws.com",
-    "SMTP_FROM":"andrew@teller.finance",
+    "AWS_REGION":"eu-west-3",
+    "SMTP_FROM":"info@teller.org",
     "SMTP_TO":"udai@teller.finance"    
 }
