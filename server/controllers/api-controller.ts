@@ -30,7 +30,7 @@ export default class ApiController {
     console.log(typeof req.body)
     const expectedSignature = crypto
           .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)          
-          .update(Buffer.from(req.body.toString()))// This has to be the raw Buffer body of the request not the parsed JSON
+          .update(Buffer.from(req.body.toString()))
           .digest('base64')
  
 
