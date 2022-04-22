@@ -27,10 +27,10 @@ export default class ApiController {
 
     const signature = req.headers['x-onramp-signature']
  
-    console.log(typeof req.body)
+    
     const expectedSignature = crypto
-          .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)          
-          .update(Buffer.from(req.body.toString()))
+          .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)    
+          .update(req.rawBody)
           .digest('base64')
  
 
@@ -40,20 +40,13 @@ export default class ApiController {
      })
     }
 
-    const inputs = {
+ 
+    const receipt: WebhookReceipt = {
       requestId: inputParams.requestId,
       user: inputParams.user,
       template: inputParams.template,
       profile: inputParams.profile,
       application: inputParams.application,
-    }
-
-    const receipt: WebhookReceipt = {
-      requestId: inputs.requestId,
-      user: inputs.user,
-      template: inputs.template,
-      profile: inputs.profile,
-      application: inputs.application,
       createdAt: Date.now(),
     }
 

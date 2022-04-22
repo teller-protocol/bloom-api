@@ -34,9 +34,12 @@ describe('Webhook Server', () => {
 
       let inputParams = {requestId:'testId'}
 
+      let rawBody = JSON.stringify(inputParams)
+
+
       let hmacSignature = crypto
       .createHmac('sha256', 'invalid_key')          
-      .update(Buffer.from(inputParams.toString()))// This has to be the raw Buffer body of the request not the parsed JSON
+      .update(rawBody)// This has to be the raw Buffer body of the request not the parsed JSON
       .digest('base64')
 
       let headers ={
@@ -60,9 +63,11 @@ describe('Webhook Server', () => {
 
       let inputParams = {requestId:'testId'}
 
+      let rawBody = JSON.stringify(inputParams)
+        
       let hmacSignature = crypto
-      .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)          
-      .update(Buffer.from(inputParams.toString()))// This has to be the raw Buffer body of the request not the parsed JSON
+      .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)
+      .update(rawBody)// This has to be the raw Buffer body of the request not the parsed JSON
       .digest('base64')
 
       let headers ={
