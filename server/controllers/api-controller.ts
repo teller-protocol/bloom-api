@@ -4,6 +4,8 @@ import AppHelper from '../../lib/app-helper'
 import { sendEmail } from '../../lib/mail-sender'
 import MongoInterface, { WebhookReceipt } from '../../lib/mongo-interface'
 
+const crypto = require('crypto');
+
 export default class ApiController {
   constructor(public mongoInterface: MongoInterface) {}
 
@@ -19,6 +21,19 @@ export default class ApiController {
     console.log('received webhook', req)
 
     const inputParams = req.body
+
+
+    const signature = req.headers['x-onramp-signature']
+
+    const expectedSignature = crypto
+          .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)          
+          .update(req.body)// This has to be the raw Buffer body of the request not the parsed JSON
+          .digest('base64')
+
+    if (signature !== expectedSignature) return res.status(401).send({
+      success: false, error:'invalid signature'
+    })
+
 
     const inputs = {
       requestId: inputParams.requestId,
