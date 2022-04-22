@@ -16,17 +16,15 @@ import ApiController from './controllers/api-controller'
 require('dotenv').config()
 const bodyParser = require('body-parser')
 
-
 const routes = FileHelper.readJSONFile('./server/config/routes.json')
 
 export default class WebServer {
   server: https.Server | http.Server | undefined
   mongoInterface: MongoInterface = new MongoInterface()
 
-
   async start(serverConfig: any): Promise<void> {
     const dbName = AppHelper.getDbName()
- 
+
     await this.mongoInterface.init(dbName)
 
     const apiController = new ApiController(this.mongoInterface)
@@ -40,14 +38,13 @@ export default class WebServer {
     app.use(
       bodyParser.json({
         type: '*/*',
-        verify: (req:any, res:any, buf: Buffer) => {
-           req.rawBody = buf
-           return true
+        verify: (req: any, res: any, buf: Buffer) => {
+          req.rawBody = buf
+          return true
         },
         limit: '10mb', // https://stackoverflow.com/a/19965089/1165441
       })
     )
-
 
     this.server = http.createServer(app)
 

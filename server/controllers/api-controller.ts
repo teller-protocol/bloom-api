@@ -4,9 +4,7 @@ import AppHelper from '../../lib/app-helper'
 import { sendEmail } from '../../lib/mail-sender'
 import MongoInterface, { WebhookReceipt } from '../../lib/mongo-interface'
 
-const crypto = require('crypto');
-
-
+const crypto = require('crypto')
 
 export default class ApiController {
   constructor(public mongoInterface: MongoInterface) {}
@@ -20,27 +18,22 @@ export default class ApiController {
  
   */
   receiveWebhook: APICall = async (req: any, res: any) => {
-     
-
     const inputParams = req.body
 
-
     const signature = req.headers['x-onramp-signature']
- 
-    
+
     const expectedSignature = crypto
-          .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)    
-          .update(req.rawBody)
-          .digest('base64')
- 
+      .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)
+      .update(req.rawBody)
+      .digest('base64')
 
     if (signature !== expectedSignature) {
       return res.status(401).send({
-      success: false, error:'invalid signature'
-     })
+        success: false,
+        error: 'invalid signature',
+      })
     }
 
- 
     const receipt: WebhookReceipt = {
       requestId: inputParams.requestId,
       user: inputParams.user,
@@ -64,18 +57,18 @@ export default class ApiController {
     }
 
     try {
+      const shouldSendEmail = AppHelper.getEnvironmentName() == 'production'
 
-      const shouldSendEmail = (AppHelper.getEnvironmentName() == 'production')
-
-      if(shouldSendEmail){
+      if (shouldSendEmail) {
         sentEmail = await sendEmail(
           'Bloom API Alert',
-          'A webhook has been received with request_id '.concat(inputs.requestId)
+          'A webhook has been received with request_id '.concat(
+            inputs.requestId
+          )
         )
-  
+
         console.log('sent email', sentEmail)
       }
-     
     } catch (error) {
       console.error(error)
     }

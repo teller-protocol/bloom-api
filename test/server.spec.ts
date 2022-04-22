@@ -4,7 +4,7 @@ import chai, { expect } from 'chai'
 import FileHelper from '../lib/file-helper'
 import WebServer from '../server/server'
 
-const crypto = require('crypto');
+const crypto = require('crypto')
 
 const serverConfig = FileHelper.readJSONFile(
   './server/config/serverConfig.json'
@@ -30,54 +30,54 @@ describe('Webhook Server', () => {
     })
 
     it('should fail a webhook with wrong key', async () => {
+      const inputParams = { requestId: 'testId' }
 
+      const rawBody = JSON.stringify(inputParams)
 
-      let inputParams = {requestId:'testId'}
+      const hmacSignature = crypto
+        .createHmac('sha256', 'invalid_key')
+        .update(rawBody) // This has to be the raw Buffer body of the request not the parsed JSON
+        .digest('base64')
 
-      let rawBody = JSON.stringify(inputParams)
-
-
-      let hmacSignature = crypto
-      .createHmac('sha256', 'invalid_key')          
-      .update(rawBody)// This has to be the raw Buffer body of the request not the parsed JSON
-      .digest('base64')
-
-      let headers ={
+      const headers = {
         headers: {
           'x-onramp-signature': hmacSignature,
-          'content-type': 'text/json'
-        }
+          'content-type': 'text/json',
+        },
       }
 
-      const result = axios.post(uriRoot + '/api/webhook', inputParams, headers).then((res)=>{ 
-        throw 'webhook was supposed to fail'
-      }).catch((err)=>{ 
-        expect(err.response.status).to.eql(401)
-      })
- 
+      const result = axios
+        .post(uriRoot + '/api/webhook', inputParams, headers)
+        .then((res) => {
+          throw new Error('webhook was supposed to fail')
+        })
+        .catch((err) => {
+          expect(err.response.status).to.eql(401)
+        })
     })
 
-
     it('should accept a webhook', async () => {
+      const inputParams = { requestId: 'testId' }
 
+      const rawBody = JSON.stringify(inputParams)
 
-      let inputParams = {requestId:'testId'}
+      const hmacSignature = crypto
+        .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)
+        .update(rawBody) // This has to be the raw Buffer body of the request not the parsed JSON
+        .digest('base64')
 
-      let rawBody = JSON.stringify(inputParams)
-        
-      let hmacSignature = crypto
-      .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)
-      .update(rawBody)// This has to be the raw Buffer body of the request not the parsed JSON
-      .digest('base64')
-
-      let headers ={
+      const headers = {
         headers: {
           'x-onramp-signature': hmacSignature,
-          'content-type': 'text/json'
-        }
+          'content-type': 'text/json',
+        },
       }
 
-      const result = await axios.post(uriRoot + '/api/webhook', inputParams, headers)
+      const result = await axios.post(
+        uriRoot + '/api/webhook',
+        inputParams,
+        headers
+      )
 
       expect(result.data.success).to.eql(true)
     })
