@@ -28,6 +28,12 @@ export default class ApiController {
       application: inputParams.application,
     }
 
+    if(!inputs.requestId){
+      return res.status(200).send({
+        success: false, error:'missing request id'
+      })
+    }
+
     const receipt: WebhookReceipt = {
       requestId: inputs.requestId,
       user: inputs.user,
