@@ -19,14 +19,15 @@ const routes = FileHelper.readJSONFile('./server/config/routes.json')
 
 export default class WebServer {
   server: https.Server | http.Server | undefined
+  mongoInterface: MongoInterface = new MongoInterface()
+
 
   async start(serverConfig: any): Promise<void> {
     const dbName = AppHelper.getDbName()
+ 
+    await this.mongoInterface.init(dbName)
 
-    const mongoInterface = new MongoInterface()
-    await mongoInterface.init(dbName)
-
-    const apiController = new ApiController(mongoInterface)
+    const apiController = new ApiController(this.mongoInterface)
 
     const app = express()
     const apiPort = serverConfig.port ? serverConfig.port : 3000
