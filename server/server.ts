@@ -24,7 +24,7 @@ export default class WebServer {
 
   async start(serverConfig: any): Promise<void> {
     const dbName = AppHelper.getDbName()
-
+ 
     await this.mongoInterface.init(dbName)
 
     const apiController = new ApiController(this.mongoInterface)
@@ -33,18 +33,18 @@ export default class WebServer {
     const apiPort = serverConfig.port ? serverConfig.port : 3000
 
     app.use(cors())
-    //app.use(express.json())
-
+    
     app.use(
       bodyParser.json({
         type: '*/*',
         verify: (req: any, res: any, buf: Buffer) => {
-          req.rawBody = buf
-          return true
+           req.rawBody = buf
+           return true
         },
         limit: '10mb', // https://stackoverflow.com/a/19965089/1165441
       })
     )
+
 
     this.server = http.createServer(app)
 
