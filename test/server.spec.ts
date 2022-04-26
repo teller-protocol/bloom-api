@@ -2,16 +2,15 @@ import axios from 'axios'
 import chai, { expect } from 'chai'
 
 import FileHelper from '../lib/file-helper'
-import WebServer from '../server/server' 
+import WebServer from '../server/server'
 
 const serverConfig = FileHelper.readJSONFile(
   './server/config/serverConfig.json'
 )
 
-const uriRoot = 'http://localhost:3000'
-let authToken: any
+const uriRoot = 'http://localhost:8000'
 
-describe('AttestationServer', () => {
+describe('Webhook Server', () => {
   describe('Recieve webhook', () => {
     before(async () => {
       //boot web server
@@ -25,7 +24,5 @@ describe('AttestationServer', () => {
 
       expect(result.data.success).to.eql(true)
     })
- 
- 
   })
 })

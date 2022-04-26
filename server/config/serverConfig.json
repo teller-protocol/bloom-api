@@ -1,7 +1,3 @@
 {
-    "verifierContractAddress":"0xAFA0228Fb00C0D293Bc1b6aC1a4e1b4B42F8B952",
-    "marketId": 1,
-    "chainId": 5
-
-    
+    "port":8000
 }

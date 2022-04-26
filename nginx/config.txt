@@ -1,0 +1,17 @@
+server {
+        # listen 80 default_server;
+        # listen [::]:80 default_server;
+        listen 443 ssl;
+        listen [::]:443 ssl;
+
+
+        include snippets/teller.org.conf;
+
+        server_name teller.org;
+
+        location / {
+                proxy_pass http://localhost:8000;
+        }
+
+	 
+}

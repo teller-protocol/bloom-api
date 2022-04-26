@@ -1,0 +1,5 @@
+{
+    "AWS_REGION":"eu-west-3",
+    "SMTP_FROM":"info@teller.org",
+    "SMTP_TO":"udai@teller.finance"    
+}
