@@ -34,10 +34,13 @@ export default class WebServer {
 
     app.use(cors())
     
+    /*
+    Required by Bloom API for accepting webhook data properly 
+    */
     app.use(
       bodyParser.json({
         type: '*/*',
-        verify: (req: any, res: any, buf: Buffer) => {
+        verify: (req:any, res:any, buf:Buffer) => {
            req.rawBody = buf
            return true
         },

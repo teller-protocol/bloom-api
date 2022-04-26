@@ -34,6 +34,14 @@ export default class ApiController {
       })
     }
 
+
+    if(!inputParams.requestId){
+      return res.status(200).send({
+        success: false, error:'missing request id'
+      })
+    }
+
+
     const receipt: WebhookReceipt = {
       requestId: inputParams.requestId,
       user: inputParams.user,
@@ -42,6 +50,8 @@ export default class ApiController {
       application: inputParams.application,
       createdAt: Date.now(),
     }
+
+  
 
     let createdRecord
     let sentEmail
