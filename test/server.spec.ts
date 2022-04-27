@@ -59,6 +59,14 @@ describe('Webhook Server', () => {
         .catch((err) => {
           expect(err.response.status).to.eql(401)
         })
+
+
+        let loggedError: any = await webServer.mongoInterface.WebhookErrorModel.findOne({}).sort({createdAt: -1})
+
+
+        console.log('loggedError',loggedError)
+  
+        expect(loggedError.errorMessage).to.eql('Invalid HMAC signature')
     })
 
     it('should accept a webhook', async () => {
