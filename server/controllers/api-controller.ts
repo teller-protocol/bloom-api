@@ -21,7 +21,28 @@ export default class ApiController {
  
   */
 
-    verifyHmacSignature( req: any ){
+    async sendErrorEmail(loggedError: any ){
+
+      try {
+          
+        if (shouldSendEmail) {
+
+          let emailMessageText:string =  `An error has been logged:  ${loggedError.errorMessage} ` 
+
+          let sentEmail = await sendEmail(
+            'Bloom API Error',
+            emailMessageText
+          )
+  
+           
+        }
+      } catch (error) {
+        console.error(error)
+      }
+
+    }
+
+    async verifyHmacSignature( req: any ){
 
  
       const signature = req.headers['x-onramp-signature']
@@ -32,6 +53,19 @@ export default class ApiController {
         .digest('base64')
   
       if (signature !== expectedSignature) {
+
+
+        let loggedError = await this.mongoInterface.WebhookErrorModel.create(
+          {
+           requestInput: req.rawBody, 
+           errorMessage: "Invalid HMAC signature",
+           createdAt: Date.now() ,
+           type: undefined
+          } 
+       )
+
+       await this.sendErrorEmail( loggedError )
+
         return  {
           success: false,
           error: 'invalid signature',
@@ -49,23 +83,40 @@ export default class ApiController {
 
       let createdRecord
       let sentEmail
+      let loggedError 
   
       try {
         createdRecord = await this.mongoInterface.WebhookReceiptModel.create(
           receipt
         )
    
-      } catch (error) {
-        console.error(error)
+      } catch (error:any) {
+
+        console.log('error',error)
+
+        let loggedError = await this.mongoInterface.WebhookErrorModel.create(
+           {
+            requestInput: receipt, 
+            errorMessage: error.message,
+            createdAt: Date.now() ,
+            type: receipt.type
+           } 
+        )
+
+        await this.sendErrorEmail( loggedError )
+
+         
       }
   
       try {
-        
-  
+          
         if (shouldSendEmail) {
+
+          let emailMessageText:string = createdRecord? `A ${receipt.type} webhook has been received with request_id: ${receipt.requestId}`: `A ${receipt.type} error has been logged with request_id: ${receipt.requestId}`
+
           sentEmail = await sendEmail(
             'Bloom API Alert',
-            `A ${receipt.type} webhook has been received with request_id: ${receipt.requestId}`
+            emailMessageText
           )
   
           console.log('sent email', sentEmail)
@@ -83,19 +134,14 @@ export default class ApiController {
     receiveBNPLKYC: APICall = async (req: any, res: any) => {
       const inputParams = req.body
 
-      let verifySignatureResult = this.verifyHmacSignature(req)
+      let verifySignatureResult = await this.verifyHmacSignature(req)
 
       if(!verifySignatureResult.success){
         return res.status(401).send(verifySignatureResult)
       }
 
 
-      if(!inputParams.requestId){
-        return res.status(200).send({
-          success: false, error:'missing request id'
-        })
-      }
-
+     
 
       const receipt: WebhookReceipt = {
         requestId: inputParams.requestId,
@@ -111,7 +157,7 @@ export default class ApiController {
 
       
       return res.status(200).send({
-        success: true,
+        success: !!createdRecord,
       })
     }
 
@@ -120,19 +166,13 @@ export default class ApiController {
     receiveBNPLLender: APICall = async (req: any, res: any) => {
       const inputParams = req.body
 
-      let verifySignatureResult = this.verifyHmacSignature(req)
+      let verifySignatureResult = await this.verifyHmacSignature(req)
 
       if(!verifySignatureResult.success){
         return res.status(401).send(verifySignatureResult)
       }
 
-
-      if(!inputParams.requestId){
-        return res.status(200).send({
-          success: false, error:'missing request id'
-        })
-      }
-
+ 
 
       const receipt: WebhookReceipt = {
         requestId: inputParams.requestId,
@@ -148,7 +188,7 @@ export default class ApiController {
 
       
       return res.status(200).send({
-        success: true,
+        success: !!createdRecord,
       })
     }
 
@@ -156,20 +196,14 @@ export default class ApiController {
     receiveMortgageBorrower: APICall = async (req: any, res: any) => {
       const inputParams = req.body
 
-      let verifySignatureResult = this.verifyHmacSignature(req)
+      let verifySignatureResult = await this.verifyHmacSignature(req)
 
       if(!verifySignatureResult.success){
         return res.status(401).send(verifySignatureResult)
       }
 
 
-      if(!inputParams.requestId){
-        return res.status(200).send({
-          success: false, error:'missing request id'
-        })
-      }
-
-
+      
       const receipt: WebhookReceipt = {
         requestId: inputParams.requestId,
         user: inputParams.user,
@@ -184,7 +218,7 @@ export default class ApiController {
 
       
       return res.status(200).send({
-        success: true,
+        success: !!createdRecord,
       })
     }
 
@@ -192,19 +226,13 @@ export default class ApiController {
     receiveMortgageLender: APICall = async (req: any, res: any) => {
       const inputParams = req.body
 
-      let verifySignatureResult = this.verifyHmacSignature(req)
+      let verifySignatureResult = await this.verifyHmacSignature(req)
 
       if(!verifySignatureResult.success){
         return res.status(401).send(verifySignatureResult)
       }
 
-
-      if(!inputParams.requestId){
-        return res.status(200).send({
-          success: false, error:'missing request id'
-        })
-      }
-
+ 
 
       const receipt: WebhookReceipt = {
         requestId: inputParams.requestId,
@@ -220,7 +248,7 @@ export default class ApiController {
 
       
       return res.status(200).send({
-        success: true,
+        success: !!createdRecord,
       })
     }
 

@@ -1,5 +1,7 @@
 import axios from 'axios'
 import chai, { expect } from 'chai'
+import AppHelper from '../lib/app-helper'
+import MongoInterface from '../lib/mongo-interface'
 
 import FileHelper from '../lib/file-helper'
 import WebServer from '../server/server'
@@ -12,12 +14,15 @@ const serverConfig = FileHelper.readJSONFile(
 
 const uriRoot = 'http://localhost:8000'
 
+let webServer:WebServer
+
+ 
 describe('Webhook Server', () => {
   describe('Recieve webhook', () => {
     before(async () => {
       //boot web server
 
-      const webServer = new WebServer()
+      webServer = new WebServer()
       await webServer.start(serverConfig)
 
       await webServer.mongoInterface.dropDatabase()
@@ -80,6 +85,42 @@ describe('Webhook Server', () => {
       )
 
       expect(result.data.success).to.eql(true)
+    })
+
+
+
+    it('should log an error', async () => {
+      const inputParams = { requestId: undefined, application: 'Apps' }
+
+      const rawBody = JSON.stringify(inputParams)
+
+      const hmacSignature = crypto
+        .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)
+        .update(rawBody) // This has to be the raw Buffer body of the request not the parsed JSON
+        .digest('base64')
+
+      const headers = {
+        headers: {
+          'x-onramp-signature': hmacSignature,
+          'content-type': 'text/json',
+        },
+      }
+
+      const result = await axios.post(
+        uriRoot + '/api/bnpl-kyc/webhook',
+        inputParams,
+        headers
+      )
+
+      expect(result.data.success).to.eql(false)
+
+
+      let loggedError: any = await webServer.mongoInterface.WebhookErrorModel.findOne({}).sort({createdAt: -1})
+
+
+      console.log('loggedError',loggedError)
+
+      expect(loggedError.errorMessage).to.eql('webhookreceipts validation failed: requestId: Path `requestId` is required.')
     })
   })
 })

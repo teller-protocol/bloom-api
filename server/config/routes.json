@@ -1,7 +1,7 @@
 [
     {"type":"get","uri":"/api/ping","method":"ping","controller":"api"},
  
-    
+    {"type":"post","uri":"/api/webhook","method":"receiveBNPLKYC","controller":"api"},
     {"type":"post","uri":"/api/bnpl-kyc/webhook","method":"receiveBNPLKYC","controller":"api"},
     {"type":"post","uri":"/api/bnpl-lender/webhook","method":"receiveBNPLLender","controller":"api"},
     {"type":"post","uri":"/api/mortgage-borrower/webhook","method":"receiveMortgageBorrower","controller":"api"} ,
