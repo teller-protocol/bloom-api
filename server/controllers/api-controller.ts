@@ -72,9 +72,7 @@ export default class ApiController {
       if (shouldSendEmail) {
         sentEmail = await sendEmail(
           'Bloom API Alert',
-          'A webhook has been received with request_id '.concat(
-            inputs.requestId
-          )
+          `A webhook has been received with request_id: ${inputParams.requestId}`
         )
 
         console.log('sent email', sentEmail)
