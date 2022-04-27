@@ -46,8 +46,8 @@ describe('Webhook Server', () => {
         },
       }
 
-      const result = axios
-        .post(uriRoot + '/api/webhook', inputParams, headers)
+      const result = await axios
+        .post(uriRoot + '/api/bnpl-kyc/webhook', inputParams, headers)
         .then((res) => {
           throw new Error('webhook was supposed to fail')
         })
@@ -74,7 +74,7 @@ describe('Webhook Server', () => {
       }
 
       const result = await axios.post(
-        uriRoot + '/api/webhook',
+        uriRoot + '/api/bnpl-kyc/webhook',
         inputParams,
         headers
       )

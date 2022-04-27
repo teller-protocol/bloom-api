@@ -6,7 +6,8 @@ export interface WebhookReceipt {
   template: any
   profile: any
   application: any
-  createdAt: number
+  createdAt: number,
+  type:string
 }
 
 export default class MongoInterface {
@@ -19,6 +20,7 @@ export default class MongoInterface {
     profile: Object,
     application: Object,
     createdAt: Number,
+    type: String
   })
 
   WebhookReceiptModel = this.mongoose.model<WebhookReceipt>(
