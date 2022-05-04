@@ -49,6 +49,11 @@ export default class WebServer {
     )
 
 
+    if(!process.env.ONRAMP_WEBHOOK_KEY ){
+      throw(new Error('Missing Webhook Key'))
+    }
+
+
     this.server = http.createServer(app)
 
     MiniRouteLoader.loadRoutes(app, routes, apiController)

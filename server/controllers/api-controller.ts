@@ -1,4 +1,5 @@
 import { APICall } from 'mini-route-loader'
+import { isCatchClause } from 'typescript'
 
 import AppHelper from '../../lib/app-helper'
 import { sendEmail } from '../../lib/mail-sender'
@@ -47,10 +48,20 @@ export default class ApiController {
  
       const signature = req.headers['x-onramp-signature']
 
-      const expectedSignature = crypto
-        .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)
-        .update(req.rawBody)
-        .digest('base64')
+      let expectedSignature
+
+      try{ 
+        expectedSignature = crypto
+          .createHmac('sha256', process.env.ONRAMP_WEBHOOK_KEY)
+          .update(req.rawBody)
+          .digest('base64')
+      }catch(err){
+        return  {
+          success: false,
+          error: 'invalid signature',
+        }
+      }
+
   
       if (signature !== expectedSignature) {
 
