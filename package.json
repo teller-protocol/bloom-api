@@ -7,7 +7,8 @@
     "server": "yarn ts-node server/index",
     "test": "NODE_ENV=TEST ts-mocha -p tsconfig.testing.json 'test/**/*.spec.ts' --timeout 10000",
     "lint": "eslint '**/*.ts'",
-    "format": "yarn lint --fix --quiet"
+    "format": "yarn lint --fix --quiet",
+    "postinstall": "husky install"
   },
   "author": "",
   "license": "MIT",
