@@ -1,9 +1,9 @@
 import axios from 'axios'
 import chai, { expect } from 'chai'
-import AppHelper from '../lib/app-helper'
-import MongoInterface from '../lib/mongo-interface'
 
+import AppHelper from '../lib/app-helper'
 import FileHelper from '../lib/file-helper'
+import MongoInterface from '../lib/mongo-interface'
 import WebServer from '../server/server'
 
 const crypto = require('crypto')
@@ -14,9 +14,8 @@ const serverConfig = FileHelper.readJSONFile(
 
 const uriRoot = 'http://localhost:8000'
 
-let webServer:WebServer
+let webServer: WebServer
 
- 
 describe('Webhook Server', () => {
   describe('Recieve webhook', () => {
     before(async () => {
@@ -60,13 +59,14 @@ describe('Webhook Server', () => {
           expect(err.response.status).to.eql(401)
         })
 
+      const loggedError: any =
+        await webServer.mongoInterface.WebhookErrorModel.findOne({}).sort({
+          createdAt: -1,
+        })
 
-        let loggedError: any = await webServer.mongoInterface.WebhookErrorModel.findOne({}).sort({createdAt: -1})
+      console.log('loggedError', loggedError)
 
-
-        console.log('loggedError',loggedError)
-  
-        expect(loggedError.errorMessage).to.eql('Invalid HMAC signature')
+      expect(loggedError.errorMessage).to.eql('Invalid HMAC signature')
     })
 
     it('should accept a webhook', async () => {
@@ -95,8 +95,6 @@ describe('Webhook Server', () => {
       expect(result.data.success).to.eql(true)
     })
 
-
-
     it('should log an error', async () => {
       const inputParams = { requestId: undefined, application: 'Apps' }
 
@@ -122,13 +120,16 @@ describe('Webhook Server', () => {
 
       expect(result.data.success).to.eql(false)
 
+      const loggedError: any =
+        await webServer.mongoInterface.WebhookErrorModel.findOne({}).sort({
+          createdAt: -1,
+        })
 
-      let loggedError: any = await webServer.mongoInterface.WebhookErrorModel.findOne({}).sort({createdAt: -1})
+      console.log('loggedError', loggedError)
 
-
-      console.log('loggedError',loggedError)
-
-      expect(loggedError.errorMessage).to.eql('webhookreceipts validation failed: requestId: Path `requestId` is required.')
+      expect(loggedError.errorMessage).to.eql(
+        'webhookreceipts validation failed: requestId: Path `requestId` is required.'
+      )
     })
   })
 })

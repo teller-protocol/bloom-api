@@ -1,10 +1,10 @@
 import { Mongoose, Schema } from 'mongoose'
 
 export interface WebhookError {
-  requestInput: any,
-  errorMessage:any,
-  createdAt: number,
-  type:string
+  requestInput: any
+  errorMessage: any
+  createdAt: number
+  type: string
 }
 
 export interface WebhookReceipt {
@@ -13,30 +13,28 @@ export interface WebhookReceipt {
   template: any
   profile: any
   application: any
-  createdAt: number,
-  type:string
+  createdAt: number
+  type: string
 }
 
 export default class MongoInterface {
   mongoose = new Mongoose()
 
-
   WebhookErrorSchema = new Schema<WebhookError>({
     requestInput: Object,
     errorMessage: Object,
     createdAt: Number,
-    type: String
+    type: String,
   })
 
-
   WebhookReceiptSchema = new Schema<WebhookReceipt>({
-    requestId: { type: String, index: true, unique: true, required: true},
+    requestId: { type: String, index: true, unique: true, required: true },
     user: Object,
     template: Object,
     profile: Object,
     application: Object,
     createdAt: Number,
-    type: String
+    type: String,
   })
 
   WebhookReceiptModel = this.mongoose.model<WebhookReceipt>(
@@ -44,12 +42,10 @@ export default class MongoInterface {
     this.WebhookReceiptSchema
   )
 
-
   WebhookErrorModel = this.mongoose.model<WebhookError>(
     'webhookerrors',
     this.WebhookErrorSchema
   )
-
 
   async init(dbName: string, config?: any): Promise<void> {
     const host: string = config?.url ?? 'localhost'
