@@ -1,4 +1,4 @@
-name: run bloom tests
+name: run bloom api tests
 on: 
   pull_request:
     branches: 
