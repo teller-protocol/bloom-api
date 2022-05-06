@@ -9,7 +9,7 @@ import MiniRouteLoader from 'mini-route-loader'
 
 import AppHelper from '../lib/app-helper'
 import FileHelper from '../lib/file-helper'
-import MongoInterface from '../lib/mongo-interface'
+//import MongoInterface from '../lib/mongo-database'
 
 import ApiController from './controllers/api-controller'
 
@@ -20,15 +20,9 @@ const routes = FileHelper.readJSONFile('./server/config/routes.json')
 
 export default class WebServer {
   server: https.Server | http.Server | undefined
-  mongoInterface: MongoInterface = new MongoInterface()
-
-  async start(serverConfig: any): Promise<void> {
-    const dbName = AppHelper.getDbName()
-
-    await this.mongoInterface.init(dbName)
-
-    const apiController = new ApiController(this.mongoInterface)
-
+ 
+  async start(apiController: ApiController, serverConfig: any): Promise<void> {
+   
     const app = express()
     const apiPort = serverConfig.port ? serverConfig.port : 3000
 

@@ -2,12 +2,12 @@ import { APICall } from 'mini-route-loader'
 
 import AppHelper from '../../lib/app-helper'
 import { sendEmail } from '../../lib/mail-sender'
-import MongoInterface, { WebhookReceipt } from '../../lib/mongo-interface'
+import { MongoDatabaseInterface, WebhookReceipt } from '../../lib/mongo-database'
 
 const crypto = require('crypto')
 
 export default class ApiController {
-  constructor(public mongoInterface: MongoInterface) {}
+  constructor(public mongoDatabase: MongoDatabaseInterface) {}
 
   ping: APICall = async (req: any, res: any) => {
     return res.status(200).send({ success: true })
@@ -18,11 +18,14 @@ export default class ApiController {
  
   */
 
+  shouldSendEmail() : boolean {
+    return AppHelper.getEnvironmentName() == 'production'
+  }
+
   async sendErrorEmail(loggedError: any): Promise<any> {
     try {
-      const shouldSendEmail = AppHelper.getEnvironmentName() == 'production'
-
-      if (shouldSendEmail) {
+      
+      if (this.shouldSendEmail()) {
         const emailMessageText = `An error has been logged:  ${loggedError.errorMessage} `
 
         const sentEmail = await sendEmail('Bloom API Error', emailMessageText)
@@ -41,7 +44,7 @@ export default class ApiController {
       .digest('base64')
 
     if (signature !== expectedSignature) {
-      const loggedError = await this.mongoInterface.WebhookErrorModel.create({
+      const loggedError = await this.mongoDatabase.WebhookErrorModel.create({
         requestInput: req.rawBody,
         errorMessage: 'Invalid HMAC signature',
         createdAt: Date.now(),
@@ -65,13 +68,13 @@ export default class ApiController {
     let loggedError
 
     try {
-      createdRecord = await this.mongoInterface.WebhookReceiptModel.create(
+      createdRecord = await this.mongoDatabase.WebhookReceiptModel.create(
         receipt
       )
     } catch (error: any) {
       console.log('error', error)
 
-      const loggedError = await this.mongoInterface.WebhookErrorModel.create({
+      const loggedError = await this.mongoDatabase.WebhookErrorModel.create({
         requestInput: receipt,
         errorMessage: error.message,
         createdAt: Date.now(),
@@ -82,7 +85,7 @@ export default class ApiController {
     }
 
     try {
-      if (shouldSendEmail) {
+      if (this.shouldSendEmail()) {
         const emailMessageText: string = createdRecord
           ? `A ${receipt.type} webhook has been received with request_id: ${receipt.requestId}`
           : `A ${receipt.type} error has been logged with request_id: ${receipt.requestId}`
