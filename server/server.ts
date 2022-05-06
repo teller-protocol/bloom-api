@@ -7,7 +7,7 @@ import cors from 'cors'
 import express from 'express'
 import MiniRouteLoader from 'mini-route-loader'
 
-import AppHelper from '../lib/app-helper'
+
 import FileHelper from '../lib/file-helper'
 //import MongoInterface from '../lib/mongo-database'
 

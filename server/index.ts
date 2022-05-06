@@ -1,4 +1,4 @@
-import AppHelper from 'lib/app-helper'
+import AppHelper from '../lib/app-helper'
 import FileHelper from '../lib/file-helper'
 
 import WebServer from './server'

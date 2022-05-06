@@ -24,7 +24,7 @@
     "ethereumjs-util": "^7.1.4",
     "ethers": "^5.5.0",
     "express": "^4.17.1",
-    "mini-route-loader": "^0.22.0",
+    "mini-route-loader": "^0.25.1",
     "mongodb": "^3.6.5",
     "mongoose": "^6.2.9",
     "nodemailer": "^6.7.3",

@@ -101,7 +101,7 @@ export default class ApiController {
     return { createdRecord, sentEmail }
   }
 
-  receiveBNPLKYC: APICall = async (req: any, res: any) => {
+  receiveWebhook: APICall = async (req: any, res: any) => {
     const inputParams = req.body
 
     const verifySignatureResult = await this.verifyHmacSignature(req)
@@ -109,6 +109,11 @@ export default class ApiController {
     if (!verifySignatureResult.success) {
       return res.status(401).send(verifySignatureResult)
     }
+    
+ 
+
+    let webhookType = req.router.params.type 
+ 
 
     const receipt: WebhookReceipt = {
       requestId: inputParams.requestId,
@@ -117,7 +122,7 @@ export default class ApiController {
       profile: inputParams.profile,
       application: inputParams.application,
       createdAt: Date.now(),
-      type: 'BNPL_KYC',
+      type: webhookType
     }
 
     const { createdRecord, sentEmail } = await this.storeAndBroadcastReceipt(
@@ -129,87 +134,7 @@ export default class ApiController {
     })
   }
 
-  receiveBNPLLender: APICall = async (req: any, res: any) => {
-    const inputParams = req.body
-
-    const verifySignatureResult = await this.verifyHmacSignature(req)
-
-    if (!verifySignatureResult.success) {
-      return res.status(401).send(verifySignatureResult)
-    }
-
-    const receipt: WebhookReceipt = {
-      requestId: inputParams.requestId,
-      user: inputParams.user,
-      template: inputParams.template,
-      profile: inputParams.profile,
-      application: inputParams.application,
-      createdAt: Date.now(),
-      type: 'BNPL_Lender',
-    }
-
-    const { createdRecord, sentEmail } = await this.storeAndBroadcastReceipt(
-      receipt
-    )
-
-    return res.status(200).send({
-      success: !!createdRecord,
-    })
-  }
-
-  receiveMortgageBorrower: APICall = async (req: any, res: any) => {
-    const inputParams = req.body
-
-    const verifySignatureResult = await this.verifyHmacSignature(req)
-
-    if (!verifySignatureResult.success) {
-      return res.status(401).send(verifySignatureResult)
-    }
-
-    const receipt: WebhookReceipt = {
-      requestId: inputParams.requestId,
-      user: inputParams.user,
-      template: inputParams.template,
-      profile: inputParams.profile,
-      application: inputParams.application,
-      createdAt: Date.now(),
-      type: 'Mortgage_Borrower',
-    }
-
-    const { createdRecord, sentEmail } = await this.storeAndBroadcastReceipt(
-      receipt
-    )
-
-    return res.status(200).send({
-      success: !!createdRecord,
-    })
-  }
-
-  receiveMortgageLender: APICall = async (req: any, res: any) => {
-    const inputParams = req.body
-
-    const verifySignatureResult = await this.verifyHmacSignature(req)
-
-    if (!verifySignatureResult.success) {
-      return res.status(401).send(verifySignatureResult)
-    }
-
-    const receipt: WebhookReceipt = {
-      requestId: inputParams.requestId,
-      user: inputParams.user,
-      template: inputParams.template,
-      profile: inputParams.profile,
-      application: inputParams.application,
-      createdAt: Date.now(),
-      type: 'Mortgage_Lender',
-    }
-
-    const { createdRecord, sentEmail } = await this.storeAndBroadcastReceipt(
-      receipt
-    )
-
-    return res.status(200).send({
-      success: !!createdRecord,
-    })
-  }
+  
+ 
+ 
 }

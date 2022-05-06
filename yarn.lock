@@ -5693,7 +5693,7 @@ __metadata:
     ethers: ^5.5.0
     express: ^4.17.1
     husky: ^7.0.4
-    mini-route-loader: ^0.22.0
+    mini-route-loader: ^0.25.1
     mocha: ^8.2.1
     mongodb: ^3.6.5
     mongoose: ^6.2.9
@@ -5929,12 +5929,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mini-route-loader@npm:^0.22.0":
-  version: 0.22.0
-  resolution: "mini-route-loader@npm:0.22.0"
+"mini-route-loader@npm:^0.25.1":
+  version: 0.25.1
+  resolution: "mini-route-loader@npm:0.25.1"
   dependencies:
     ts-node: ^9.1.1
-  checksum: 6e617ea57210726b73ccf5214fad0c1dc03a69ff9a1e39289b7600b85153b9fa9babcd0ae4b0a338db44858dc80e917a4866eaedf28532d129fbc0f073910147
+  checksum: 28a04fe7ad27a337d2fc45e663a8bc087667bde88da7ae7f6eda8dca0968ba868c917409c214efed7e458af1923d451ce9f6ac1614033dfc47131eb3d6ac4f4b
   languageName: node
   linkType: hard
 
