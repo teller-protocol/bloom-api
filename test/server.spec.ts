@@ -8,11 +8,10 @@ import WebServer from '../server/server'
 
 const crypto = require('crypto')
 
-const serverConfig = FileHelper.readJSONFile(
-  './server/config/serverConfig.json'
-)
 
-const uriRoot = 'http://localhost:8000'
+const serverConfig = {port:4040}
+
+const uriRoot = `http://localhost:${serverConfig.port}`
 
 let webServer: WebServer
 

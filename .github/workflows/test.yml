@@ -18,3 +18,5 @@ jobs:
       - name: run test
         run: yarn test
         shell: bash
+        env:
+          ONRAMP_WEBHOOK_KEY: ${{ secrets.ONRAMP_WEBHOOK_KEY }}
