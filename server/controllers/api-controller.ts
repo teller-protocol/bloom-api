@@ -2,7 +2,10 @@ import { APICall } from 'mini-route-loader'
 
 import AppHelper from '../../lib/app-helper'
 import { sendEmail } from '../../lib/mail-sender'
-import { MongoDatabaseInterface, WebhookReceipt } from '../../lib/mongo-database'
+import {
+  MongoDatabaseInterface,
+  WebhookReceipt,
+} from '../../lib/mongo-database'
 
 const crypto = require('crypto')
 
@@ -18,13 +21,12 @@ export default class ApiController {
  
   */
 
-  shouldSendEmail() : boolean {
+  shouldSendEmail(): boolean {
     return AppHelper.getEnvironmentName() == 'production'
   }
 
   async sendErrorEmail(loggedError: any): Promise<any> {
     try {
-      
       if (this.shouldSendEmail()) {
         const emailMessageText = `An error has been logged:  ${loggedError.errorMessage} `
 
@@ -109,11 +111,8 @@ export default class ApiController {
     if (!verifySignatureResult.success) {
       return res.status(401).send(verifySignatureResult)
     }
-    
- 
 
-    let webhookType = req.router.params.type 
- 
+    const webhookType = req.router.params.type
 
     const receipt: WebhookReceipt = {
       requestId: inputParams.requestId,
@@ -122,7 +121,7 @@ export default class ApiController {
       profile: inputParams.profile,
       application: inputParams.application,
       createdAt: Date.now(),
-      type: webhookType
+      type: webhookType,
     }
 
     const { createdRecord, sentEmail } = await this.storeAndBroadcastReceipt(
@@ -133,8 +132,4 @@ export default class ApiController {
       success: !!createdRecord,
     })
   }
-
-  
- 
- 
 }

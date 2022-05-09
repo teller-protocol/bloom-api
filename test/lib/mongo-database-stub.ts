@@ -1,6 +1,9 @@
-import { MongoDatabaseInterface, WebhookError, WebhookReceipt } from 'lib/mongo-database'
+import {
+  MongoDatabaseInterface,
+  WebhookError,
+  WebhookReceipt,
+} from 'lib/mongo-database'
 import { AnyKeys, FilterQuery, Schema, UpdateQuery } from 'mongoose'
-
 
 class StubbedModel {
   dataStore: any[]
@@ -48,7 +51,6 @@ class StubbedModel {
 }
 
 export default class MongoDatabaseStub implements MongoDatabaseInterface {
-  
   WebhookErrorSchema = new Schema<WebhookError>({
     requestInput: Object,
     errorMessage: Object,
@@ -66,12 +68,15 @@ export default class MongoDatabaseStub implements MongoDatabaseInterface {
     type: String,
   })
 
+  WebhookReceiptModel = new StubbedModel(
+    'webhookerrors',
+    this.WebhookReceiptSchema
+  )
 
-  WebhookReceiptModel = new StubbedModel('webhookerrors', this.WebhookReceiptSchema)
-
- 
-  WebhookErrorModel = new StubbedModel('webhookreceipts', this.WebhookErrorSchema)
-
+  WebhookErrorModel = new StubbedModel(
+    'webhookreceipts',
+    this.WebhookErrorSchema
+  )
 
   async init(dbName: string, config?: any): Promise<void> {
     const host: string = config?.url ?? 'localhost'

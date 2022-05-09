@@ -3,14 +3,14 @@ import chai, { expect } from 'chai'
 
 import AppHelper from '../lib/app-helper'
 import FileHelper from '../lib/file-helper'
-import MongoDatabaseStub from './lib/mongo-database-stub'
-import WebServer from '../server/server'
 import ApiController from '../server/controllers/api-controller'
+import WebServer from '../server/server'
+
+import MongoDatabaseStub from './lib/mongo-database-stub'
 
 const crypto = require('crypto')
 
-
-const serverConfig = {port:4040}
+const serverConfig = { port: 4040 }
 
 const uriRoot = `http://localhost:${serverConfig.port}`
 
@@ -23,12 +23,16 @@ describe('Webhook Server', () => {
 
       const mongoDatabase = new MongoDatabaseStub()
 
-      let apiController = new ApiController(mongoDatabase)
+      const apiController = new ApiController(mongoDatabase)
 
       webServer = new WebServer()
       await webServer.start(apiController, serverConfig)
 
-     // await webServer.mongoInterface.dropDatabase()
+      // await webServer.mongoInterface.dropDatabase()
+    })
+
+    after(async () => {
+      await webServer.stop( )
     })
 
     it('should return a ping response', async () => {
@@ -99,6 +103,8 @@ describe('Webhook Server', () => {
       expect(result.data.success).to.eql(true)
     })
 
+      
+    /*
     it.skip('should log an error', async () => {
       const inputParams = { requestId: undefined, application: 'Apps' }
 
@@ -124,7 +130,12 @@ describe('Webhook Server', () => {
 
       expect(result.data.success).to.eql(false)
 
-      /*const loggedError: any =
+     
+    })*/
+
+
+
+     /*const loggedError: any =
         await mongoDatabase.WebhookErrorModel.findOne({}).sort({
           createdAt: -1,
         })
@@ -134,6 +145,8 @@ describe('Webhook Server', () => {
       expect(loggedError.errorMessage).to.eql(
         'webhookreceipts validation failed: requestId: Path `requestId` is required.'
       )*/
-    })
+
+
+
   })
 })

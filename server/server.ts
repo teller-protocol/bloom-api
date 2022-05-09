@@ -7,7 +7,6 @@ import cors from 'cors'
 import express from 'express'
 import MiniRouteLoader from 'mini-route-loader'
 
-
 import FileHelper from '../lib/file-helper'
 //import MongoInterface from '../lib/mongo-database'
 
@@ -21,8 +20,8 @@ const routes = FileHelper.readJSONFile('./server/config/routes.json')
 export default class WebServer {
   server: https.Server | http.Server | undefined
  
+
   async start(apiController: ApiController, serverConfig: any): Promise<void> {
-   
     const app = express()
     const apiPort = serverConfig.port ? serverConfig.port : 3000
 
@@ -42,17 +41,24 @@ export default class WebServer {
       })
     )
 
-
-    if(!process.env.ONRAMP_WEBHOOK_KEY ){
-      throw(new Error('Missing Webhook Key'))
+    if (!process.env.ONRAMP_WEBHOOK_KEY) {
+      throw new Error('Missing Webhook Key')
     }
 
-    this.server = http.createServer(app)
+   // this.server = http.createServer(app)
 
     MiniRouteLoader.loadRoutes(app, routes, apiController)
 
-    app.listen(apiPort, () => {
+    this.server = app.listen(apiPort, () => {
       console.log(`API Server listening at http://localhost:${apiPort}`)
     })
+  }
+
+
+  async stop(){
+    if(this.server){
+      this.server.close()
+    }
+ 
   }
 }
