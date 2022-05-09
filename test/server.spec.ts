@@ -66,8 +66,6 @@ describe('Webhook Server', () => {
         .catch((err) => {
           expect(err.response.status).to.eql(401)
         })
-
-     
     })
 
     it('should accept a webhook', async () => {
@@ -95,7 +93,5 @@ describe('Webhook Server', () => {
 
       expect(result.data.success).to.eql(true)
     })
-
-     
   })
 })
