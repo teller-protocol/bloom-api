@@ -7,9 +7,8 @@ import cors from 'cors'
 import express from 'express'
 import MiniRouteLoader from 'mini-route-loader'
 
-import AppHelper from '../lib/app-helper'
 import FileHelper from '../lib/file-helper'
-import MongoInterface from '../lib/mongo-interface'
+//import MongoInterface from '../lib/mongo-database'
 
 import ApiController from './controllers/api-controller'
 
@@ -20,15 +19,8 @@ const routes = FileHelper.readJSONFile('./server/config/routes.json')
 
 export default class WebServer {
   server: https.Server | http.Server | undefined
-  mongoInterface: MongoInterface = new MongoInterface()
 
-  async start(serverConfig: any): Promise<void> {
-    const dbName = AppHelper.getDbName()
-
-    await this.mongoInterface.init(dbName)
-
-    const apiController = new ApiController(this.mongoInterface)
-
+  async start(apiController: ApiController, serverConfig: any): Promise<void> {
     const app = express()
     const apiPort = serverConfig.port ? serverConfig.port : 3000
 
@@ -48,17 +40,24 @@ export default class WebServer {
       })
     )
 
-
-    if(!process.env.ONRAMP_WEBHOOK_KEY ){
-      throw(new Error('Missing Webhook Key'))
+    if (!process.env.ONRAMP_WEBHOOK_KEY) {
+      throw new Error('Missing Webhook Key')
     }
 
-    this.server = http.createServer(app)
+    // this.server = http.createServer(app)
 
     MiniRouteLoader.loadRoutes(app, routes, apiController)
 
-    app.listen(apiPort, () => {
+    this.server = app.listen(apiPort, () => {
       console.log(`API Server listening at http://localhost:${apiPort}`)
     })
+  }
+
+  async stop(): Promise<boolean> {
+    if (this.server) {
+      this.server.close()
+    }
+
+    return true
   }
 }

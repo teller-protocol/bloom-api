@@ -1,5 +1,13 @@
 import { Mongoose, Schema } from 'mongoose'
 
+export interface MongoDatabaseInterface {
+  WebhookErrorModel: any
+  WebhookReceiptModel: any
+
+  init: (dbName: string, config?: any) => Promise<void>
+  dropDatabase: () => Promise<void>
+}
+
 export interface WebhookError {
   requestInput: any
   errorMessage: any

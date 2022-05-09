@@ -1,14 +1,12 @@
 [
     {"type":"get","uri":"/api/ping","method":"ping","controller":"api"},
  
-    {"type":"post","uri":"/api/webhook","method":"receiveBNPLKYC","controller":"api"},
-    {"type":"post","uri":"/api/bnpl-kyc/webhook","method":"receiveBNPLKYC","controller":"api"},
-    {"type":"post","uri":"/api/bnpl-lender/webhook","method":"receiveBNPLLender","controller":"api"},
-    {"type":"post","uri":"/api/mortgage-borrower/webhook","method":"receiveMortgageBorrower","controller":"api"} ,
-    {"type":"post","uri":"/api/mortgage-lender/webhook","method":"receiveMortgageLender","controller":"api"} 
+    {"type":"post","uri":"/api/webhook","method":"receiveWebhook","controller":"api", "appendParams":{"type":"BNPL_KYC"}},
+    {"type":"post","uri":"/api/bnpl-kyc/webhook","method":"receiveWebhook","controller":"api", "appendParams":{"type":"BNPL_KYC"}},
+    {"type":"post","uri":"/api/bnpl-lender/webhook","method":"receiveWebhook","controller":"api", "appendParams":{"type":"BNPL_Lender"}},
+    {"type":"post","uri":"/api/mortgage-borrower/webhook","method":"receiveWebhook","controller":"api", "appendParams":{"type":"Mortgage_Borrower"}},
+    {"type":"post","uri":"/api/mortgage-lender/webhook","method":"receiveWebhook","controller":"api", "appendParams":{"type":"Mortgage_Lender"}}
    
-  
    
-  
    
 ]
