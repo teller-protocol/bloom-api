@@ -19,7 +19,6 @@ const routes = FileHelper.readJSONFile('./server/config/routes.json')
 
 export default class WebServer {
   server: https.Server | http.Server | undefined
- 
 
   async start(apiController: ApiController, serverConfig: any): Promise<void> {
     const app = express()
@@ -45,7 +44,7 @@ export default class WebServer {
       throw new Error('Missing Webhook Key')
     }
 
-   // this.server = http.createServer(app)
+    // this.server = http.createServer(app)
 
     MiniRouteLoader.loadRoutes(app, routes, apiController)
 
@@ -54,11 +53,11 @@ export default class WebServer {
     })
   }
 
-
-  async stop(){
-    if(this.server){
+  async stop(): Promise<boolean> {
+    if (this.server) {
       this.server.close()
     }
- 
+
+    return true
   }
 }
